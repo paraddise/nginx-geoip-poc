@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  nginx:
+    image: nginx
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      - echo
+    volumes:
+      - ./var:/var
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./GeoLite2-Country.mmdb:/GeoLite2-Country.mmdb
+      - ./var/cache/nginx:/var/cache/nginx
+  echo:
+    image: mendhak/http-https-echo
+    ports:
+      - "8080:8080"
+      - "8443:8443"

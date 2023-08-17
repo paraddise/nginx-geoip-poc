@@ -1,0 +1,5 @@
+/var/log
+/var/cache
+/var/lib
+/.idea/
+*.iml
