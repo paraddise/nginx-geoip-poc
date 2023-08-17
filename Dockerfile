@@ -1,17 +1,16 @@
-#FROM nginx
+FROM ubuntu
+WORKDIR /
+RUN sed -i "s/^# deb-src/deb-src/g" /etc/apt/sources.list
+RUN apt update && apt install -y libmaxminddb-dev mmdb-bin libmaxminddb0
+ADD https://nginx.org/download/nginx-1.25.2.tar.gz /nginx.tar.gz
+RUN tar -zxvf /nginx.tar.gz
+RUN cd /nginx-1.25.2
+RUN apt build-dep -y nginx
 
-#RUN apt update && apt install -y libmaxminddb-dev mmdb-bin libnginx-mod-http-geoip2
-#RUN apt update && apt install -y libmaxminddb-dev mmdb-bin
-#USER www-data
-#COPY ./GeoLite2-Country.mmdb /
-#COPY ./nginx.conf /etc/nginx/nginx.conf
-#COPY --chown=www-data:www-data ./var/www/html /var/www/html
+WORKDIR /nginx-1.25.2
+COPY ./ngx_http_geoip2_module /ngx_http_geoip2_module
+RUN ./configure --add-dynamic-module=/ngx_http_geoip2_module
+RUN make
+RUN make install
 
-#ENTRYPOINT ["nginx"]
-
-FROM nginx:1.23.4
-WORKDIR /var/www/html
-RUN apt update && apt install -y libmaxminddb-dev mmdb-bin
-#COPY --from=builder --chown=www-data /app/dist .
-#COPY --from=builder /app/docker/nginx/nginx.conf /etc/nginx/nginx.conf
-#COPY --from=builder /app/docker/entrypoint.sh /docker-entrypoint.d/
+ENTRYPOINT ["/usr/local/nginx/sbin/nginx"]
