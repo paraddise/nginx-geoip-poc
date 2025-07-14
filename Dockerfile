@@ -1,4 +1,5 @@
-FROM ubuntu:23
+FROM ubuntu:22.04
+
 WORKDIR /
 RUN sed -i "s/^# deb-src/deb-src/g" /etc/apt/sources.list
 RUN apt update && apt install -y libmaxminddb-dev mmdb-bin libmaxminddb0
